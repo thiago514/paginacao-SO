@@ -119,13 +119,13 @@ class Program {
             int id = file.nextInt();
             Quadro q = new Quadro(id);
             file.nextLine();
+
             boolean inside = false;
-            System.out.println(lista.size());
             if (!lista.contains(q)) {
                 if (lista.size() == size) {
                     inside = false;
                     while (!inside) {
-                        final Quadro rmQ = lista.get((clock%4));
+                        final Quadro rmQ = lista.get((clock % size));
                         if (rmQ.getSecondChance() == 1) {
                             System.out.println("id: " + rmQ.toString() + " used your second chance");
                             lista = new ArrayList<>(lista.stream().map(p -> {
@@ -135,24 +135,15 @@ class Program {
                                 }
                                 return p;
                             }).toList());
-
                         } else {
-                            lista.remove((clock%4));
-                            lista.set((clock%4), new Quadro(id));
+                            lista.remove((clock % size));
+                            lista.set((clock % size), new Quadro(id));
                             inside = true;
-
                         }
                         clock += 1;
                     }
-                }else{
+                } else {
                     lista.add(q);
-                }
-                
-                if(lista.size() < size){
-                    lista.add(q);
-                }else{
-                    lista.remove((clock%4));
-                    lista.set((clock%4), q);
                 }
 
                 System.out.println("Page Fault - Página " + q);
@@ -160,22 +151,18 @@ class Program {
                 faults++;
                 clock++;
             } else {
-                    System.out.println("Page Hit - Página " + q);
-                    System.out.println("Clock: " + clock);
-                    final Quadro fQ = q;
-                    lista = lista.stream().map(p -> {
-                        if (p.getid() == fQ.getid()) {
-                            System.out.println("id: " + p + " win second chance");
-                            p.addSecondChance();
-                        }
-                        return p;
-                    }).toList();
-                }
+                System.out.println("Page Hit - Página " + q);
+                System.out.println("Clock: " + clock);
+                final Quadro fQ = q;
+                lista = lista.stream().map(p -> {
+                    if (p.getid() == fQ.getid()) {
+    //                    System.out.println("id: " + p + " win second chance");
+                       p.addSecondChance();
+                    }
+                    return p;
+                }).toList();
+            }
         }
-
-
-
-
         return faults;
     }
 }
